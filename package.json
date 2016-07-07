@@ -1,0 +1,17 @@
+{
+  "name": "micro-node-net-lib",
+  "version": "0.0.1",
+  "description": "MicroNode global lib for net",
+  "author": {
+    "name": "Domenico Vacchiano",
+    "email": "info@domenicovacchiano.com.com",
+    "url": "http://www.domenicovacchiano.com"
+  },
+  "homepage": "http://www.domenicovacchiano.com/",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:alchimya/micro-node-net-lib.git"
+  },
+  "dependencies": {},
+  "private": true
+}
