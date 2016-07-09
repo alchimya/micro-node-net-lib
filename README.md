@@ -46,7 +46,8 @@ Where the config object hase the following structure:
     },
     "express":{
         "app":"express_app_instance"
-    }
+    },
+    "exitHandlers":["ARRAY_OF_EXIT_HANDLER_SIGNALS"]
  }
 ```
 - server.port: is the port where you want to listen to
@@ -54,6 +55,7 @@ Where the config object hase the following structure:
 - https.isEnabled: true/false if you want to create an https server instance
 - https.key & https.ca: you https server certificates
 - express.app: is you are using Express.Js you can put here your Express() app instance
+- exitHandlers: an array of exit handler signals. Default ["exit","SIGINT","SIGTERM","uncaughtException"]. This option it useful if, fro example, you want to hanlde an uncaughtException in a different way, maybe with an Express middleware. See and eample below.
 
 # HTTP Example
 ```javascript
@@ -177,5 +179,52 @@ var express=require('express'),
     
     server.registerExitHandler(function () {
         process.exit();
+    });
+```
+
+# Custom Exit Handlers Example
+```javascript
+var express=require('express'),
+    bodyParser = require('body-parser'),
+    config={
+        server:{
+            port:8080
+        },
+        express:{
+            app:null
+        },
+        exitHandlers:[
+            "exit","SIGINT","SIGTERM"
+        ]
+    }
+    },
+    app=express();
+
+    app.use(bodyParser.urlencoded({ extended: true }));
+    app.use(bodyParser.json());
+    config.express.app = app;
+
+    var server = require ('micro-node-net-lib').server(config);
+
+
+    server.create(function (err,server) {
+        if (err){
+            console.log(err);
+        }else {
+            console.log("Server is listening");
+        }
+    });
+    
+    server.registerExitHandler(function () {
+        process.exit();
+    });
+    
+    //Uncaught Exception Handler
+    app.use(function(err, req, res, next) {
+        res.status(500).send({
+                code:1000,
+                message:"Application Error",
+                domain:"Application Error"
+            });
     });
 ```
